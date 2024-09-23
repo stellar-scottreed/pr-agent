@@ -38,7 +38,7 @@ class OpenAIHandler(BaseAiHandler):
 
     @retry(exceptions=(APIError, Timeout, TryAgain, AttributeError, RateLimitError),
            tries=OPENAI_RETRIES, delay=2, backoff=2, jitter=(1, 3))
-    async def chat_completion(self, model: str, system: str, user: str, temperature: float = 0.2):
+    async def chat_completion(self, model: str, system: str, user: str, temperature: float = 1.0):
         try:
             deployment_id = self.deployment_id
             get_logger().info("System: ", system)

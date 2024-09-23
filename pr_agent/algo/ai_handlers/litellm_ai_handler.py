@@ -160,7 +160,7 @@ class LiteLLMAIHandler(BaseAiHandler):
         retry=retry_if_exception_type((openai.APIError, openai.APIConnectionError, openai.APITimeoutError)), # No retry on RateLimitError
         stop=stop_after_attempt(OPENAI_RETRIES)
     )
-    async def chat_completion(self, model: str, system: str, user: str, temperature: float = 0.2, img_path: str = None):
+    async def chat_completion(self, model: str, system: str, user: str, temperature: float = 1.0, img_path: str = None):
         try:
             resp, finish_reason = None, None
             deployment_id = self.deployment_id
