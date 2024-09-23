@@ -170,7 +170,15 @@ class LiteLLMAIHandler(BaseAiHandler):
                 system = "No system prompt provided"
                 get_logger().warning(
                     "Empty system prompt for claude model. Adding a newline character to prevent OpenAI API error.")
-            messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+             messages = []
+
+            # Check if 'o1' is not in the model name before adding the system message
+            if "o1" not in model:
+                messages.append({"role": "system", "content": system})
+
+            messages.append({"role": "user", "content": user})
+
             if img_path:
                 try:
                     # check if the image link is alive
