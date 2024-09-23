@@ -43,7 +43,16 @@ class OpenAIHandler(BaseAiHandler):
             deployment_id = self.deployment_id
             get_logger().info("System: ", system)
             get_logger().info("User: ", user)
-            messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+            
+            messages = []
+
+            # Check if 'o1' is not in the model name before adding the system message
+            if "o1" not in model:
+                messages.append({"role": "system", "content": system})
+                get_logger().info("System: ", system)
+
+            messages.append({"role": "user", "content": user})
+            get_logger().info("User: ", user)
 
             chat_completion = await openai.ChatCompletion.acreate(
                 model=model,
