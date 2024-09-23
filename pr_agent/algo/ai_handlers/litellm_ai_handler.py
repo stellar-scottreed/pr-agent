@@ -171,7 +171,7 @@ class LiteLLMAIHandler(BaseAiHandler):
                 get_logger().warning(
                     "Empty system prompt for claude model. Adding a newline character to prevent OpenAI API error.")
 
-             messages = []
+            messages = []
 
             # Check if 'o1' is not in the model name before adding the system message
             if "o1" not in model:
