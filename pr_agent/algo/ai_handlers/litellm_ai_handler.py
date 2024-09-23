@@ -174,7 +174,9 @@ class LiteLLMAIHandler(BaseAiHandler):
             messages = []
 
             # Check if 'o1' is not in the model name before adding the system message
-            if "o1" not in model:
+            if "o1" in model:
+                messages.append({"role": "user", "content": system})
+            else:
                 messages.append({"role": "system", "content": system})
 
             messages.append({"role": "user", "content": user})

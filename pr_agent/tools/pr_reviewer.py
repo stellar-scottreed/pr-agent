@@ -1,5 +1,6 @@
 import copy
 import datetime
+import traceback
 from collections import OrderedDict
 from functools import partial
 from typing import List, Tuple
@@ -140,7 +141,7 @@ class PRReviewer:
                 return None
 
             pr_review = self._prepare_pr_review()
-            get_logger().debug(f"PR output", artifact=pr_review)
+            get_logger().debug(f"PR output", artifacts=pr_review)
 
             if get_settings().config.publish_output:
                 # publish the review
@@ -158,6 +159,8 @@ class PRReviewer:
                     self._publish_inline_code_comments()
         except Exception as e:
             get_logger().error(f"Failed to review PR: {e}")
+            traceback.print_exc()
+
 
     async def _prepare_prediction(self, model: str) -> None:
         self.patches_diff = get_pr_diff(self.git_provider,
@@ -197,6 +200,7 @@ class PRReviewer:
             user=user_prompt
         )
 
+        get_logger().debug(f"_get_prediction", artifacts=response)
         return response
 
     def _prepare_pr_review(self) -> str:
@@ -206,11 +210,14 @@ class PRReviewer:
         """
         first_key = 'review'
         last_key = 'security_concerns'
+
         data = load_yaml(self.prediction.strip(),
                          keys_fix_yaml=["estimated_effort_to_review_[1-5]:", "security_concerns:", "key_issues_to_review:",
                                         "relevant_file:", "relevant_line:", "suggestion:"],
                          first_key=first_key, last_key=last_key)
         github_action_output(data, 'review')
+
+        get_logger().debug(f"data", artifacts=data)
 
         # move data['review'] 'key_issues_to_review' key to the end of the dictionary
         if 'key_issues_to_review' in data['review']:
